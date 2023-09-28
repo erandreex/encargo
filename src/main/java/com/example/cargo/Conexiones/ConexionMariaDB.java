@@ -10,11 +10,11 @@ public class ConexionMariaDB {
     public static Connection getConexion() {
         Connection con = null;
 
-        String servidor = "";
-        String usuario = "";
-        String password = "";
-        String puerto = "";
-        String db = "";
+        String servidor = "localhost";
+        String usuario = "root";
+        String password = "taliTakumi514";
+        String puerto = "3306";
+        String db = "admin";
 
         try {
             // Class.forName("org.mariadb.jdbc.Driver");

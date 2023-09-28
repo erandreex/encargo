@@ -19,14 +19,14 @@ public class ThreadCrontabs extends Thread {
         ProcesosCrontabs proceso = new ProcesosCrontabs();
         ModeloFechaActual fechaActual = proceso.ConsultaFechaActual();
 
-        boolean validaMinuto = proceso.ValidaParteTiempo("minuto", config.getMinuto(), fechaActual);
-        boolean validaHora = proceso.ValidaParteTiempo("hora", config.getHora(), fechaActual);
-        boolean validaDiaMes = proceso.ValidaParteTiempo("diames", config.getDiaMes(), fechaActual);
-        boolean validaMes = proceso.ValidaParteTiempo("mes", config.getMes(), fechaActual);
-        boolean validaDiaSemana = proceso.ValidaParteTiempo("diasemana", config.getDiaSemana(), fechaActual);
+        boolean validaMinuto = proceso.ValidaParteTiempo("minuto", config.getTiempo_minuto(), fechaActual);
+        boolean validaHora = proceso.ValidaParteTiempo("hora", config.getTiempo_hora(), fechaActual);
+        boolean validaDiaMes = proceso.ValidaParteTiempo("diames", config.getTiempo_diaMes(), fechaActual);
+        boolean validaMes = proceso.ValidaParteTiempo("mes", config.getTiempo_mes(), fechaActual);
+        boolean validaDiaSemana = proceso.ValidaParteTiempo("diasemana", config.getTiempo_diaSemana(), fechaActual);
 
         if (validaMinuto && validaHora && validaDiaMes && validaMes && validaDiaSemana) {
-            System.out.println("Ejecutando - " + config.getNombre());
+            System.out.println("Ejecutando - " + config.getConfig_nombre());
             proceso.ContactaURLHTTP(this.config, this.timeNow);
         }
 

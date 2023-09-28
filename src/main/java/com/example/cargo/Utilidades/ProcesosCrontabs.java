@@ -25,29 +25,30 @@ public class ProcesosCrontabs {
 
         List<ModeloCrontabConfig> listaCrontabs = new ArrayList<>();
 
-        String query = "CALL cargo_crontab.sp_cargo_crontab_config_consultas(?,?)";
+        String query = "CALL admin_cargo.sp_admin_cargo_crontabs_consultas(?,?)";
 
         try (Connection mariaDB = ConexionMariaDB.getConexion();
                 CallableStatement cst = mariaDB.prepareCall(query);) {
 
             cst.setString(1, "Q");
-            cst.setString(1, "QCCC");
+            cst.setString(2, "QCCL");
             ResultSet rs = cst.executeQuery();
 
             while (rs.next()) {
                 ModeloCrontabConfig resultado = new ModeloCrontabConfig();
-                resultado.setNombre(rs.getString("ccc_nombre"));
-                resultado.setDescripcion(rs.getString("ccc_descripcion"));
-                resultado.setMinuto(rs.getString("ccc_minuto"));
-                resultado.setHora(rs.getString("ccc_hora"));
-                resultado.setDiaMes(rs.getString("ccc_dia_mes"));
-                resultado.setMes(rs.getString("ccc_mes"));
-                resultado.setDiaSemana(rs.getString("ccc_dia_semana"));
-                resultado.setServidor(rs.getString("ccc_servidor"));
-                resultado.setPuerto(rs.getString("ccc_puerto"));
-                resultado.setEndpoint(rs.getString("ccc_endpoint"));
-                resultado.setProceso(rs.getString("ccc_proceso"));
-                resultado.setTimeout(rs.getString("ccc_timeout"));
+                resultado.setConfig_nombre(rs.getString("acc_config_nombre"));
+                resultado.setBandera_activo(rs.getString("acc_bandera_activo"));
+                resultado.setMeta_descripcion(rs.getString("acc_meta_descripcion"));
+                resultado.setTiempo_minuto(rs.getString("acc_tiempo_minuto"));
+                resultado.setTiempo_hora(rs.getString("acc_tiempo_hora"));
+                resultado.setTiempo_diaMes(rs.getString("acc_tiempo_diaMes"));
+                resultado.setTiempo_mes(rs.getString("acc_tiempo_mes"));
+                resultado.setTiempo_diaSemana(rs.getString("acc_tiempo_diaSemana"));
+                resultado.setEjecucion_servidor(rs.getString("acc_ejecucion_servidor"));
+                resultado.setEjecucion_puerto(rs.getString("acc_ejecucion_puerto"));
+                resultado.setEjecucion_endpoint(rs.getString("acc_ejecucion_endpoint"));
+                resultado.setEjecucion_proceso(rs.getString("acc_ejecucion_proceso"));
+                resultado.setEjecucion_timeout(rs.getString("acc_ejecucion_timeout"));
                 listaCrontabs.add(resultado);
             }
         } catch (Exception e) {
@@ -328,45 +329,54 @@ public class ProcesosCrontabs {
 
         String fechaFinal = String.valueOf(sdf.format(cal.getTime()));
         String salida = "N/A";
-        String url = "http://" + crontab.getServidor() + ":" + crontab.getPuerto() + crontab.getEndpoint() + "?proceso="
-                + crontab.getProceso() + "&timeout=" + crontab.getTimeout();
+        String url = "http://" + crontab.getEjecucion_servidor() + ":" + crontab.getEjecucion_puerto()
+                + crontab.getEjecucion_endpoint() + "?proceso="
+                + crontab.getEjecucion_proceso() + "&timeout=" + crontab.getEjecucion_timeout();
 
         // TODO: Insertar en la bitacora crontab cargo
 
-        String nombreFinal = crontab.getNombre().trim().replaceAll(" ", "%20");
+        String nombreFinal = crontab.getConfig_nombre().trim().replaceAll(" ", "%20");
 
         String urlInicial = url + "&procesoNombre=" + nombreFinal + "&time=" + timeNow;
 
-        try {
+        System.out.println(urlInicial);
+        return;
 
-            URL urlFinal = new URL(urlInicial);
-            HttpURLConnection urlCon = (HttpURLConnection) urlFinal.openConnection();
-            urlCon.setConnectTimeout(Integer.parseInt(crontab.getTimeout()) + 5);
-            urlCon.setRequestMethod("GET");
-            urlCon.setRequestProperty("Content-Type", "application/json;");
-            urlCon.setRequestProperty("Connection", "keep-live");
-            urlCon.setRequestProperty("cache-control", "no-cache");
-            urlCon.setDoOutput(true);
+        /*
+         * try {
+         * 
+         * URL urlFinal = new URL(urlInicial);
+         * HttpURLConnection urlCon = (HttpURLConnection) urlFinal.openConnection();
+         * urlCon.setConnectTimeout(Integer.parseInt(crontab.getEjecucion_timeout()) +
+         * 5);
+         * urlCon.setRequestMethod("GET");
+         * urlCon.setRequestProperty("Content-Type", "application/json;");
+         * urlCon.setRequestProperty("Connection", "keep-live");
+         * urlCon.setRequestProperty("cache-control", "no-cache");
+         * urlCon.setDoOutput(true);
+         * 
+         * // Respuesta
+         * 
+         * InputStream is = urlCon.getInputStream();
+         * BufferedReader br = new BufferedReader(new InputStreamReader(is));
+         * StringBuilder respuesta = new StringBuilder();
+         * String linea;
+         * while ((linea = br.readLine()) != null) {
+         * respuesta.append(linea);
+         * respuesta.append("\n");
+         * }
+         * br.close();
+         * is.close();
+         * urlCon.disconnect();
+         * 
+         * salida = respuesta.toString();
+         * } catch (Exception e) {
+         * System.out.println("Error al contactar el URL: " + e);
+         * }
+         * 
+         */
 
-            // Respuesta
-
-            InputStream is = urlCon.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            StringBuilder respuesta = new StringBuilder();
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                respuesta.append(linea);
-                respuesta.append("\n");
-            }
-            br.close();
-            is.close();
-            urlCon.disconnect();
-
-            salida = respuesta.toString();
-        } catch (Exception e) {
-            System.out.println("Error al contactar el URL: " + e);
-        }
-
+        // System.out.println(salida);
         // TODO: Insertar en la bitacora crontab cargo
 
     }

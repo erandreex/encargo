@@ -5,10 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.example.cargo.Modelos.ModeloCrontabConfig;
 import com.example.cargo.Threads.ThreadCrontabs;
 import com.example.cargo.Utilidades.ProcesosCrontabs;
 
+@Component
 public class ControladorCrontabs extends Thread {
 
     public void run() {
@@ -38,7 +41,6 @@ public class ControladorCrontabs extends Thread {
 
                 if (segundo >= 0 && segundo <= 5 && minutoActual != minutoAnterior) {
                     minutoAnterior = minutoActual;
-
                     List<ModeloCrontabConfig> listaCrontabs = new ProcesosCrontabs().ConsultaCrontabs();
                     listaCrontabs.forEach(element -> {
                         new ThreadCrontabs(element, timeNow).start();
