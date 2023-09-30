@@ -25,13 +25,15 @@ public class ProcesosCrontabs {
 
         List<ModeloCrontabConfig> listaCrontabs = new ArrayList<>();
 
-        String query = "CALL admin_cargo.sp_admin_cargo_crontabs_consultas(?,?)";
+        String query = "CALL admin_cargo.sp_admin_cargo_crontabs_consultas(?,?,?)";
 
         try (Connection mariaDB = ConexionMariaDB.getConexion();
                 CallableStatement cst = mariaDB.prepareCall(query);) {
 
             cst.setString(1, "Q");
             cst.setString(2, "QCCL");
+            cst.setString(3, null);
+
             ResultSet rs = cst.executeQuery();
 
             while (rs.next()) {
@@ -340,41 +342,37 @@ public class ProcesosCrontabs {
         String urlInicial = url + "&procesoNombre=" + nombreFinal + "&time=" + timeNow;
 
         System.out.println(urlInicial);
-        return;
 
-        /*
-         * try {
-         * 
-         * URL urlFinal = new URL(urlInicial);
-         * HttpURLConnection urlCon = (HttpURLConnection) urlFinal.openConnection();
-         * urlCon.setConnectTimeout(Integer.parseInt(crontab.getEjecucion_timeout()) +
-         * 5);
-         * urlCon.setRequestMethod("GET");
-         * urlCon.setRequestProperty("Content-Type", "application/json;");
-         * urlCon.setRequestProperty("Connection", "keep-live");
-         * urlCon.setRequestProperty("cache-control", "no-cache");
-         * urlCon.setDoOutput(true);
-         * 
-         * // Respuesta
-         * 
-         * InputStream is = urlCon.getInputStream();
-         * BufferedReader br = new BufferedReader(new InputStreamReader(is));
-         * StringBuilder respuesta = new StringBuilder();
-         * String linea;
-         * while ((linea = br.readLine()) != null) {
-         * respuesta.append(linea);
-         * respuesta.append("\n");
-         * }
-         * br.close();
-         * is.close();
-         * urlCon.disconnect();
-         * 
-         * salida = respuesta.toString();
-         * } catch (Exception e) {
-         * System.out.println("Error al contactar el URL: " + e);
-         * }
-         * 
-         */
+        try {
+
+            URL urlFinal = new URL(urlInicial);
+            HttpURLConnection urlCon = (HttpURLConnection) urlFinal.openConnection();
+            urlCon.setConnectTimeout(Integer.parseInt(crontab.getEjecucion_timeout()) +
+                    5);
+            urlCon.setRequestMethod("GET");
+            urlCon.setRequestProperty("Content-Type", "application/json;");
+            urlCon.setRequestProperty("Connection", "keep-live");
+            urlCon.setRequestProperty("cache-control", "no-cache");
+            urlCon.setDoOutput(true);
+
+            // Respuesta
+
+            InputStream is = urlCon.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            StringBuilder respuesta = new StringBuilder();
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                respuesta.append(linea);
+                respuesta.append("\n");
+            }
+            br.close();
+            is.close();
+            urlCon.disconnect();
+
+            salida = respuesta.toString();
+        } catch (Exception e) {
+            System.out.println("Error al contactar el URL: " + e);
+        }
 
         // System.out.println(salida);
         // TODO: Insertar en la bitacora crontab cargo
