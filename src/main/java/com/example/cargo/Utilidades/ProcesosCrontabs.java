@@ -331,17 +331,13 @@ public class ProcesosCrontabs {
 
         String fechaFinal = String.valueOf(sdf.format(cal.getTime()));
         String salida = "N/A";
+
         String url = "http://" + crontab.getEjecucion_servidor() + ":" + crontab.getEjecucion_puerto()
                 + crontab.getEjecucion_endpoint() + "?proceso="
                 + crontab.getEjecucion_proceso() + "&timeout=" + crontab.getEjecucion_timeout();
 
-        // TODO: Insertar en la bitacora crontab cargo
-
         String nombreFinal = crontab.getConfig_nombre().trim().replaceAll(" ", "%20");
-
         String urlInicial = url + "&procesoNombre=" + nombreFinal + "&time=" + timeNow;
-
-        System.out.println(urlInicial);
 
         try {
 
@@ -374,8 +370,7 @@ public class ProcesosCrontabs {
             System.out.println("Error al contactar el URL: " + e);
         }
 
-        // System.out.println(salida);
-        // TODO: Insertar en la bitacora crontab cargo
+        System.out.println(salida);
 
     }
 }
